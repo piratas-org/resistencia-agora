@@ -1,0 +1,39 @@
+---
+- name: setup repositories keys
+  apt_key: id='{{item.id}}' url='{{item.url}}'
+  with_items:
+    - { id: '7BD9BF62', url: 'http://nginx.org/keys/nginx_signing.key' }
+
+- name: setup repositories
+  apt_repository: repo='deb {{item}}' update_cache=yes
+  with_items:
+    - 'http://nginx.org/packages/debian/ {{debian_release}} nginx'
+
+- name: install dependencies
+  apt: name={{item}} force=yes
+  with_items:
+    - nginx
+    - git
+    - python2.7
+    - python2.7-dev
+    - virtualenvwrapper
+    - rabbitmq-server
+    - gettext
+
+- name: create system user
+  user: name="{{agora.user}}" system=yes shell=/bin/bash
+
+- action: shell grep "{{agora.user}}:!:" /etc/shadow
+  ignore_errors: yes
+  register: shadow_test
+  changed_when: False
+
+- name: lock system user
+  shell: "passwd -d {{agora.user}} && passwd -l {{agora.user}}"
+  when: shadow_test|failed
+
+- include: agora.yml
+  sudo: yes
+  sudo_user: "{{agora.user}}"
+
+- include: services.yml

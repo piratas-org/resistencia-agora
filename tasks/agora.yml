@@ -1,0 +1,13 @@
+---
+- name: clone agora-ciudadana
+  git: repo=https://github.com/pirata-cat/agora-ciudadana.git
+       dest="{{agora.root}}"
+       version=master
+
+- name: create virtualenv
+  shell: /bin/bash -c 'mkvirtualenv agora-ciudadana'
+
+- name: install dependencies
+  shell: "{{agora.virtualenv.root}}/bin/pip install -r requirements.txt"
+  args:
+    chdir="{{agora.root}}"
