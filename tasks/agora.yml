@@ -5,9 +5,23 @@
        version=master
 
 - name: create virtualenv
-  shell: /bin/bash -c 'mkvirtualenv agora-ciudadana'
+  shell: /bin/bash -c 'virtualenv {{agora.virtualenv.root}}'
+  args:
+    creates: "{{agora.virtualenv.root}}"
 
 - name: install dependencies
-  shell: "{{agora.virtualenv.root}}/bin/pip install -r requirements.txt"
-  args:
-    chdir="{{agora.root}}"
+  pip: requirements=requirements.txt
+       virtualenv="{{agora.virtualenv.root}}"
+       chdir="{{agora.root}}"
+
+- name: install custom dependencies
+  pip: name=psycopg2
+       virtualenv="{{agora.virtualenv.root}}"
+
+- name: install local config
+  template: src=settings.py
+            dest="{{agora.root}}/agora_site/custom_settings.py"
+
+- name: syncdb
+  django_manage: command=syncdb
+                 app_path="{{agora.root}}"

@@ -4,3 +4,4 @@
            enabled=yes
   with_items:
     - rabbitmq-server
+    - postgresql

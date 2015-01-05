@@ -3,11 +3,13 @@
   apt_key: id='{{item.id}}' url='{{item.url}}'
   with_items:
     - { id: '7BD9BF62', url: 'http://nginx.org/keys/nginx_signing.key' }
+    - { id: 'ACCC4CF8', url: 'https://www.postgresql.org/media/keys/ACCC4CF8.asc' }
 
 - name: setup repositories
   apt_repository: repo='deb {{item}}' update_cache=yes
   with_items:
     - 'http://nginx.org/packages/debian/ {{debian_release}} nginx'
+    - 'http://apt.postgresql.org/pub/repos/apt/ {{debian_release}}-pgdg main 9.4'
 
 - name: install dependencies
   apt: name={{item}} force=yes
@@ -19,6 +21,11 @@
     - virtualenvwrapper
     - rabbitmq-server
     - gettext
+    - libxml2-dev
+    - libxslt1-dev
+    - libffi-dev
+    - postgresql-9.4
+    - postgresql-client-9.4
 
 - name: create system user
   user: name="{{agora.user}}" system=yes shell=/bin/bash
@@ -32,8 +39,20 @@
   shell: "passwd -d {{agora.user}} && passwd -l {{agora.user}}"
   when: shadow_test|failed
 
+- include: services.yml
+
+- name: create postgresql user
+  shell: createuser "{{agora.user}}"
+  sudo: yes
+  sudo_user: postgres
+
 - include: agora.yml
   sudo: yes
   sudo_user: "{{agora.user}}"
 
-- include: services.yml
+- ufw: rule=allow
+       port="{{item}}"
+       proto=tcp
+  with_items:
+    - 80
+    - 443
