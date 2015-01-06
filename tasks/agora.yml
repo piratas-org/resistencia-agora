@@ -25,3 +25,4 @@
 - name: syncdb
   django_manage: command=syncdb
                  app_path="{{agora.root}}"
+                 virtualenv="{{agora.virtualenv.root}}"

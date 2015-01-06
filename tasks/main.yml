@@ -26,6 +26,10 @@
     - libffi-dev
     - postgresql-9.4
     - postgresql-client-9.4
+    - libpq-dev
+    - python-pip
+
+- pip: name=psycopg2
 
 - name: create system user
   user: name="{{agora.user}}" system=yes shell=/bin/bash
@@ -41,8 +45,7 @@
 
 - include: services.yml
 
-- name: create postgresql user
-  shell: createuser "{{agora.user}}"
+- include: postgres.yml
   sudo: yes
   sudo_user: postgres
 

@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 from django.utils.translation import ugettext_lazy as _
 
@@ -52,6 +53,15 @@ SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_DOMAIN = '.{{hostname}}'
 
+from django.core.exceptions import SuspiciousOperation
+
+def skip_suspicious_operations(record):
+    if record.exc_info:
+        exc_value = record.exc_info[1]
+        if isinstance(exc_value, SuspiciousOperation):
+            return False
+    return True
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
@@ -88,3 +98,24 @@ LOGGING = {
         },
     }
 }
+
+{% if not agora.api_mode %}
+SITE_NAME = '{{agora.name}}'
+
+{% if agora.auto_join %}
+AGORA_REGISTER_AUTO_JOIN = [ {{agora.auto_join}} ]
+{% endif %}
+{% endif %}
+
+{% if agora.email %}
+EMAIL_BACKEND = '{{agora.email.backend}}'
+EMAIL_HOST = '{{agora.email.host}}'
+EMAIL_HOST_PASSWORD = '{{agora.email.password}}'
+EMAIL_HOST_USER = '{{agora.email.user}}'
+SERVER_EMAIL = DEFAULT_FROM_EMAIL = '{{agora.email.from|default(agora.email.user)}}'
+EMAIL_PORT = '{{agora.email.port}}'
+{% endif %}
+
+AGORA_ALLOW_API_AUTO_ACTIVATION = True
+
+

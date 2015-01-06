@@ -3,5 +3,6 @@ __agora_user: agora
 __agora_name: agora-ciudadana
 agora: { user: "{{__agora_user}}",
          root: "/home/{{__agora_user}}/{{__agora_name}}",
+         api_mode: True,
          virtualenv: { name: "{{__agora_name}}",
                        root: "/home/{{__agora_user}}/.virtualenvs/{{__agora_name}}" } }
