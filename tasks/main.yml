@@ -28,6 +28,9 @@
     - postgresql-client-9.4
     - libpq-dev
     - python-pip
+    - libmemcached-dev
+    - zlib1g-dev
+    - supervisor
 
 - pip: name=psycopg2
 

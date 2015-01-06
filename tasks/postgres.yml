@@ -2,6 +2,11 @@
 - name: create postgresql user
   postgresql_user: name="{{agora.user}}"
 
+- shell: psql -tAc "SELECT 1 FROM pg_database WHERE datname='{{agora.user}}'"
+  register: agora_db
+  changed_when: agora_db|failed
+
 - name: create postgresql database
   postgresql_db: name="{{agora.user}}"
                  owner="{{agora.user}}"
+  when: agora_db|failed

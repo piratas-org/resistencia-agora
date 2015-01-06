@@ -22,7 +22,20 @@
   template: src=settings.py
             dest="{{agora.root}}/agora_site/custom_settings.py"
 
-- name: syncdb
-  django_manage: command=syncdb
+- name: post-install processes
+  django_manage: command='{{item}}'
                  app_path="{{agora.root}}"
                  virtualenv="{{agora.virtualenv.root}}"
+  with_items:
+    - 'syncdb --all --noinput'
+    - 'migrate --fake --noinput'
+    - 'rebuild_index --noinput'
+    - 'check_permissions'
+    - 'createsuperuser --username {{agora.user}} --email {{admin.email}} --noinput'
+    - 'compilemessages'
+  when: agora_db|failed
+
+- debug: msg='login as {{agora.user}} and execute django-admin.py changepassword {{agora.user}} to set a password'
+  when: agora_db|failed
+
+- debug: msg='you must execute too make dependencies && make all on Agora dir'
