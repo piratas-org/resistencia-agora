@@ -56,6 +56,10 @@
   sudo: yes
   sudo_user: "{{agora.user}}"
 
+- template: src=agora-supervisor.conf
+           dest=/etc/supervisor/conf.d/agora.conf
+  notify: restart supervisor
+
 - ufw: rule=allow
        port="{{item}}"
        proto=tcp
