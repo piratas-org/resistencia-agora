@@ -31,6 +31,7 @@
     - libmemcached-dev
     - zlib1g-dev
     - supervisor
+    - uwsgi
 
 - pip: name=psycopg2
 
@@ -58,6 +59,14 @@
 
 - template: src=agora-supervisor.conf
            dest=/etc/supervisor/conf.d/agora.conf
+  notify: restart supervisor
+
+- template: src=agora-uwsgi.ini
+           dest="{{agora.virtualenv.root}}/agora-uwsgi.ini"
+  notify: restart supervisor
+
+- template: src=agora-celery.conf
+           dest=/etc/supervisor/conf.d/agora-celery.conf
   notify: restart supervisor
 
 - ufw: rule=allow
