@@ -33,6 +33,7 @@
     - 'check_permissions'
     - 'createsuperuser --username {{agora.user}} --email {{admin.email}} --noinput'
     - 'compilemessages'
+    - 'collectstatic --noinput'
   when: agora_db|failed
 
 - debug: msg='login as {{agora.user}} and execute django-admin.py changepassword {{agora.user}} to set a password'

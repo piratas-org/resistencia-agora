@@ -62,12 +62,20 @@
   notify: restart supervisor
 
 - template: src=agora-uwsgi.ini
-           dest="{{agora.virtualenv.root}}/agora-uwsgi.ini"
+            dest="{{agora.virtualenv.root}}/agora-uwsgi.ini"
   notify: restart supervisor
 
 - template: src=agora-celery.conf
-           dest=/etc/supervisor/conf.d/agora-celery.conf
+            dest=/etc/supervisor/conf.d/agora-celery.conf
   notify: restart supervisor
+
+- template: src=agora_celery_launch.sh
+            dest={{agora.root}}
+            mode="0755"
+
+- template: src=agora-nginx.conf
+            dest=/etc/
+  notify: restart nginx
 
 - ufw: rule=allow
        port="{{item}}"
