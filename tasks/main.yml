@@ -32,6 +32,7 @@
     - zlib1g-dev
     - supervisor
     - uwsgi
+    - uwsgi-plugin-python
 
 - pip: name=psycopg2
 
@@ -53,6 +54,12 @@
   sudo: yes
   sudo_user: postgres
 
+- file: path="/usr/share/nginx/html/{{agora.user}}/{{item}}"
+        state=directory
+  with_items:
+    - media
+    - static
+
 - include: agora.yml
   sudo: yes
   sudo_user: "{{agora.user}}"
@@ -69,13 +76,9 @@
             dest=/etc/supervisor/conf.d/agora-celery.conf
   notify: restart supervisor
 
-- template: src=agora_celery_launch.sh
-            dest={{agora.root}}
-            mode="0755"
-
 - template: src=agora-nginx.conf
-            dest=/etc/
-  notify: restart nginx
+            dest=/etc/nginx/conf.d/00-agora.conf
+  notify: reload nginx
 
 - ufw: rule=allow
        port="{{item}}"

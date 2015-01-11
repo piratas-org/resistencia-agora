@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-PIDFILE={{agora.virtualenv.root}}/agora-celery.pid
+PIDFILE=/home/{{agora.user}}/agora-celery.pid
 ROOTD={{agora.root}}
 cd $ROOTD
 

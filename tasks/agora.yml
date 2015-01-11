@@ -22,6 +22,10 @@
   template: src=settings.py
             dest="{{agora.root}}/agora_site/custom_settings.py"
 
+- template: src=agora_celery_launch.sh
+            dest={{agora.root}}
+            mode="0755"
+
 - name: post-install processes
   django_manage: command='{{item}}'
                  app_path="{{agora.root}}"

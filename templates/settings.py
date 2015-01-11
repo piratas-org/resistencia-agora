@@ -22,6 +22,7 @@ DATABASES = {
      }
 }
 
+AGORA_ALLOW_IDCAT_CERTIFICATE = False
 AGORA_FNMT_BASE_URL = 'https://fnmt.{{hostname}}'
 AGORA_BASE_URL = 'https://{{hostname}}'
 
@@ -52,6 +53,9 @@ CELERY_ALWAYS_EAGER = False
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_DOMAIN = '.{{hostname}}'
+
+SECRET_KEY = '{{agora.secrets.key}}'
+AGORA_API_AUTO_ACTIVATION_SECRET = '{{agora.secrets.api}}'
 
 from django.core.exceptions import SuspiciousOperation
 
@@ -118,4 +122,5 @@ EMAIL_PORT = '{{agora.email.port}}'
 
 AGORA_ALLOW_API_AUTO_ACTIVATION = True
 
-
+STATIC_ROOT = "{{agora.root}}/static"
+MEDIA_ROOT = "{{agora.root}}/media"
